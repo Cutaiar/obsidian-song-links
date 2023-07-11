@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-spotify",
+	"name": "Obsidian Spotify",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Add the currently playing song from Spotify to an Obsidian note",
+	"author": "Dillon Cutaiar",
+	"authorUrl": "https://dilloncutaiar.com",
+	"fundingUrl": "https://dilloncutaiar.com",
 	"isDesktopOnly": false
 }
