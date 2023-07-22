@@ -1,0 +1,1 @@
+declare module "electron" // We need this so that we can import electron from "electron" rather than require()

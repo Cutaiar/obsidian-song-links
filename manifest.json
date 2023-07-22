@@ -6,6 +6,10 @@
 	"description": "Add the currently playing song from Spotify to an Obsidian note",
 	"author": "Dillon Cutaiar",
 	"authorUrl": "https://dilloncutaiar.com",
-	"fundingUrl": "https://dilloncutaiar.com",
-	"isDesktopOnly": false
+	"isDesktopOnly": true,
+	"fundingUrl": {
+        "Buy Me a Coffee": "https://buymeacoffee.com",
+        "GitHub Sponsor": "https://github.com/sponsors",
+        "Patreon": "https://www.patreon.com/"
+    }
 }
