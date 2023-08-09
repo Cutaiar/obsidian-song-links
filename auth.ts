@@ -2,7 +2,6 @@ export const authEndpoint = "https://accounts.spotify.com/authorize";
 
 // TODO: this should be in an env
 export const client_id = "CLIENT ID";
-export const client_secret = "CLIENT SECRET";
 export const scopes = ["user-read-currently-playing"];
 
 // Expected form: obsidian://callback/#access_token=qoq6af_B...&token_type=Bearer&expires_in=3600
