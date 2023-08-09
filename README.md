@@ -32,3 +32,4 @@ Adds the `Add song link` command to the palette which will insert a link to the 
 
 - Add funding
 - Publish to community list
+- Toggleable/configurable option to add a tag with the song link for eay lookup
