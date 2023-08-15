@@ -8,8 +8,6 @@
 	"authorUrl": "https://dilloncutaiar.com",
 	"isDesktopOnly": true,
 	"fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
+        "Buy Me a Coffee": "https://www.buymeacoffee.com/cutaiar"
     }
 }
