@@ -2,7 +2,9 @@
 
 *For those that get inspired to write to music.*
 
-Adds the `Add song link` command to the palette which will insert a link to the current playing song on Spotify. 
+Adds the `Add song link` command to the palette which will insert a link to the current playing song on Spotify.
+
+![GIF Demo](./obsidian-spotify-demo.gif)
 
 ## Development
 
