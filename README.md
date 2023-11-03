@@ -6,6 +6,10 @@ Adds the `Add song link` command to the palette which will insert a link to the 
 
 ![GIF Demo](./obsidian-spotify-demo.gif)
 
+Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/cutaiar)
+
 ## Development
 
 - Clone this repo.
