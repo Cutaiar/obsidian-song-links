@@ -1,8 +1,34 @@
 /*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
+CSS included with your plugin, and
+available in the app when plugin is enabled.
 */
+
+.spotify-profile-img {
+    border-radius: 50%;
+    margin-right: var(--size-4-4);
+    width: var(--size-4-12);
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--size-4-4);
+}
+.display-name {
+    font-size: var(--font-ui-larger);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal)
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-4-4);
+}

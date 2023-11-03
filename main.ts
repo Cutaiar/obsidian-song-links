@@ -1,14 +1,13 @@
-import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { authEndpoint, cleanUpRedirectHash, client_id, scopes } from 'auth';
-// import { getFromLocalStorage, setInLocalStorage } from 'electron-local-storage';
 import electron from 'electron'
+import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab } from 'obsidian';
+import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes } from 'auth';
 
 interface PluginSettings {
-	token: string;
+	linkFormat?: string; // TODO: Implement this
 }
 
 const DEFAULT_SETTINGS: PluginSettings = {
-	token: "" // should i use undefined?
+	linkFormat: undefined
 }
 
 /** Return type for a song fetched from spotify */
@@ -16,20 +15,27 @@ type Song = { link: string, name: string }
 
 export default class ObsidianSpotifyPlugin extends Plugin {
 	settings: PluginSettings;
-	tokenKey = "spotifytoken"
+	localStorageKey = "obsidian-spotify-access-token"
 
 	// TODO: A way to detect a refresh the token
 	// Inspired by: https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
 	// And: https://authguidance.com/desktop-apps-overview/
 	// And: https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
-	openSpotifyAuthModal = () => {
+	openSpotifyAuthModal = (onComplete?: () => void) => {
 		// Build connect link
 		// TODO: Not sure if this is a valid redirect URI (network tab has failure) but this works
 		const redirectUri = "obsidian://callback";
-		const connectToSpotifyLink = `${authEndpoint}?client_id=${client_id}&redirect_uri=${encodeURIComponent(
-			redirectUri
-		)}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
-
+		const {verifier, challenge} = generateCodeChallenge()
+		const authUrl = new URL(authEndpoint) 
+		const params =  {
+			response_type: 'code',
+			client_id: clientId,
+			scope: scopes.join("%20"), // TODO do we need to encode %20? or will urlsearchaparams do it?
+			code_challenge_method: 'S256',
+			code_challenge: challenge,
+			redirect_uri: redirectUri,
+		}
+		authUrl.search = new URLSearchParams(params).toString();
 
 		// Open an auth window
 		const authWindow = new electron.remote.BrowserWindow({
@@ -41,39 +47,61 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 				webSecurity: false
 			}
 		});
-		authWindow.loadURL(connectToSpotifyLink);
+		authWindow.loadURL(authUrl.toString());
 		authWindow.show();
 		// authWindow.webContents.openDevTools();
 
 		// TODO: Not sure i need this
 		// const defaultSession = electron.remote.session.defaultSession;
 
-		// When the user accepts, grab the auth token and send it to the main window
-		authWindow.webContents.on("will-navigate", (event: Event, url: string) => {
-			// TODO: url is deprecated apparently: https://github.com/electron/electron/blob/main/docs/api/web-contents.md#event-will-navigate
-			const tokenResponse = cleanUpRedirectHash(url)
-			const token = tokenResponse.access_token;
-			electron.ipcRenderer.send("authtoken", token)
+		// When the user accepts, grab the auth code, exchange for an access token, and send that to the main window
+		// TODO: url is deprecated apparently: https://github.com/electron/electron/blob/main/docs/api/web-contents.md#event-will-navigate
+		authWindow.webContents.on("will-navigate", async (event: Event, url: string) => {
+			const code = new URL(url).searchParams.get('code');
+
+			// If we didn't get an auth code, error out
+			if (code === null) {
+				new Notice('❌ Could not get song link');
+				authWindow.destroy();
+				return;
+			}
+
+			// Exchange auth code for an access token response
+			// TODO: Error checking
+			const tokenResponse = await fetchToken(code, verifier, redirectUri)
+
+			// Send access token and related information to main window
+			electron.ipcRenderer.send("access-token-response", tokenResponse)
 		})
 
-		electron.remote.ipcMain.on("authtoken", (event: Event, token: string) => {
-
-			// There are errors but the token is stored...
-			// Also this happens like 20 times...
-			// setInLocalStorage(electron.remote.getCurrentWindow(), this.tokenKey, token)
-			this.settings.token = token;
-			this.saveSettings()
+		electron.remote.ipcMain.on("access-token-response", (event: Event, token: TokenResponse) => {
+			// TODO: This happens more often than it should. Add a console log to see.
+			this.storeToken(token)
 			authWindow.destroy()
+			onComplete?.();
+			// TODO: Add onfail?
 		});
+	}
+
+	/** Store the token in local storage */
+	storeToken = (token: TokenResponse) => {
+		localStorage.setItem(this.localStorageKey, token.access_token)
+	}
+
+	/** Remove the token in local storage */
+	clearToken = () => {
+		localStorage.removeItem(this.localStorageKey)
+	}
+
+	/** Get the token in local storage */
+	getToken = () => {
+		return localStorage.getItem(this.localStorageKey)
 	}
 
 	// TODO catch errors
 	/** Fetch the current playing song from spotify. Undefined if nothing playing */
 	fetchCurrentSong = async (): Promise<Song | undefined> => {
-
-		// TODO: DO NOT use settings for token
-		// const token = getFromLocalStorage(electron.remote.getCurrentWindow(), this.tokenKey)
-		const token = this.settings.token;
+		const token = this.getToken();
 
 		const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
 			headers: {
@@ -90,10 +118,11 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 	/** This is an `editorCallback` function which fetches the current song an inserts it into the editor. */
 	insertSongLink = async (editor: Editor, view: MarkdownView) => {
+		const token = this.getToken()
 
 		// Handle the case where the function is used without being authed
 		// Also, we should handle if the token is expired here
-		if (this.settings.token === "") {
+		if (token === null) {
 			// Either open settings and have the user sign in there OR
 			// Open the sign in right here and (todo) wait for it to finish before calling insert song link again
 			// await this.openSpotifyAuthModal()
@@ -103,7 +132,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 		const song = await this.fetchCurrentSong();
 		if (song === undefined) {
-			new Notice('❌ Could not get song link');
+			new Notice('❌ No song playing');
 			return
 		}
 		editor.replaceSelection(`[${song.name}](${song.link})`);
@@ -142,48 +171,83 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 class SettingTab extends PluginSettingTab {
 	plugin: ObsidianSpotifyPlugin;
+	profile: SpotifyProfile | undefined
 
 	constructor(app: App, plugin: ObsidianSpotifyPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+
+		// Check for token and fetch profile if we have one
+		// TODO: We should also check expiration here
+		const token = this.plugin.getToken();
+		if (token) {
+			fetchProfile(token).then((p) => this.profile = p);
+		}
+
 	}
 
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Manage your connection to spotify' });
+		containerEl.createEl('h2', { text: 'Manage your connection to Spotify' });
+		const stack = containerEl.createDiv({cls: "stack"})
+		const token = this.plugin.getToken(); // TODO: Check expiration
 
-		// This is temporary
-		new Setting(containerEl)
-			.setName('Token')
-			.setDisabled(true)
-			.setDesc('This should not be here')
-			.addText(text => text
-				.setPlaceholder('No token yet')
-				.setValue(this.plugin.settings.token)
-				.onChange(async (value) => {
-					this.plugin.settings.token = value;
-					await this.plugin.saveSettings();
-				}));
+		// When we display, if there is a token, but not profile, fetch the profile
+		if (token !== null && this.profile === undefined) {
+			fetchProfile(token).then((p) => {
+				this.profile = p
+				this.display()
+			});
+		}
 
-		const buttonMessage = this.plugin.settings.token === "" ? "Sign into Spotify" : "Refresh sign in"
-		new ButtonComponent(containerEl)
+		// If we have a profile to display, show it
+		if (this.profile) {
+			const spotifyProfile = stack.createEl("div", {cls: "profile"} )
+			const image = spotifyProfile.createEl("img", {cls: "spotify-profile-img"})
+			image.src = this.profile.images[0].url
+			spotifyProfile.createEl("span", {text: this.profile.display_name, cls: "display-name"})
+		}
+
+		const buttons = containerEl.createDiv({cls:"buttons"})
+		
+		// Offer a way to connect
+		const buttonMessage = this.profile ?  "Refresh connection" : "Connect Spotify"
+		new ButtonComponent(buttons)
 			.setButtonText(buttonMessage)
 			.onClick(() => {
-				this.plugin.openSpotifyAuthModal()
-				// After the token is fetched, it does not show in the field above. But we are removing that setting anyway
+				this.plugin.openSpotifyAuthModal(() => this.display())
 			})
 
 		// Offer a way to disconnect
-		if (this.plugin.settings.token !== "") {
-			new ButtonComponent(containerEl)
+		if (this.profile !== undefined) {
+			new ButtonComponent(buttons)
 				.setButtonText("Disconnect Spotify")
 				.setWarning()
 				.onClick(() => {
-					this.plugin.settings.token = "";
-					this.plugin.saveSettings();
-					// TODO refresh settings
+					this.plugin.clearToken();
+					this.profile = undefined;
+					this.display()
 				})
 		}
 	}
+}
+
+// Profile fetching code
+interface SpotifyProfile {
+	display_name: string;
+	external_urls: Record<string, string>
+	images: [{height: number, width: number, url: string}]
+	// There is more we don't care about
+}
+
+const fetchProfile = async (accessToken: string): Promise<SpotifyProfile> => {
+	const response = await fetch('https://api.spotify.com/v1/me', {
+		headers: {
+			Authorization: 'Bearer ' + accessToken
+		}
+	});
+  
+	const data = await response.json();
+	return data;
 }
