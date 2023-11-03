@@ -146,7 +146,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
 			id: 'add-song-link',
-			name: 'Add Song Link',
+			name: 'Add song link',
 			editorCallback: this.insertSongLink
 		});
 
