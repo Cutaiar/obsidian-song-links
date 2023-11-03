@@ -2,7 +2,7 @@ import { createHash } from "crypto";
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 
-export const clientId = "CLIENT ID";
+export const clientId = "f73730e86de14041b47fc683e619fd8b";
 export const scopes = ["user-read-currently-playing"];
 
 export interface TokenResponse {
