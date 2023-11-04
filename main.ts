@@ -85,6 +85,8 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 	/** Store the token in local storage */
 	storeToken = (token: TokenResponse) => {
+		const expiresAt = (Date.now() / 1000) + token.expires_in;
+		localStorage.setItem("access-token-expires-at", expiresAt.toString())
 		localStorage.setItem(this.localStorageKey, token.access_token)
 	}
 
@@ -202,7 +204,7 @@ class SettingTab extends PluginSettingTab {
 		}
 
 		// If we have a profile to display, show it
-		if (this.profile) {
+		if (this.profile !== undefined) {
 			const spotifyProfile = stack.createEl("div", {cls: "profile"} )
 			const image = spotifyProfile.createEl("img", {cls: "spotify-profile-img"})
 			image.src = this.profile.images[0].url
