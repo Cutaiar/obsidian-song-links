@@ -63,7 +63,7 @@ export const fetchToken = async (code: string, verifier: string, redirectUri: st
     return response;
   }
 
-export const refreshToken = async (refreshToken: string) => {
+export const refreshToken = async (refreshToken: string): Promise<TokenResponse> => {
 
     const url = "https://accounts.spotify.com/api/token";
  

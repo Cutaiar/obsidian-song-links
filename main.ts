@@ -1,6 +1,6 @@
 import electron from 'electron'
 import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab } from 'obsidian';
-import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes } from 'auth';
+import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, refreshToken } from 'auth';
 
 interface PluginSettings {
 	linkFormat?: string; // TODO: Implement this
@@ -85,31 +85,45 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 	/** Store the token in local storage */
 	storeToken = (token: TokenResponse) => {
-		const expiresAt = (Date.now() / 1000) + token.expires_in;
+		const expiresAt = Math.floor(Date.now() / 1000) + token.expires_in;
 		localStorage.setItem("access-token-expires-at", expiresAt.toString())
+		localStorage.setItem("obsidian-spotify-refresh-token", token.refresh_token)
 		localStorage.setItem(this.localStorageKey, token.access_token)
 	}
 
 	/** Remove the token in local storage */
 	clearToken = () => {
+		localStorage.removeItem("access-token-expires-at")
+		localStorage.removeItem("obsidian-spotify-refresh-token")
 		localStorage.removeItem(this.localStorageKey)
 	}
 
 	/** Get the token in local storage */
 	getToken = () => {
-		return localStorage.getItem(this.localStorageKey)
+		const expiresAt = localStorage.getItem("access-token-expires-at")
+		const refreshToken = localStorage.getItem("obsidian-spotify-refresh-token")
+		const value = localStorage.getItem(this.localStorageKey)
+		return {value, expiresAt, refreshToken};
 	}
 
-	// TODO catch errors
-	/** Fetch the current playing song from spotify. Undefined if nothing playing */
-	fetchCurrentSong = async (): Promise<Song | undefined> => {
-		const token = this.getToken();
+	isExpired = (expiresAt: string) => {
+		return Date.now() > Number(expiresAt);
+		return true; // Uncomment to test this
+	}
 
+
+
+	/** Fetch the current playing song from spotify. Undefined if nothing playing 
+	 * `token` is expected to be a valid, non-expired, access token
+	*/
+	fetchCurrentSong = async (token: string): Promise<Song | undefined> => {
 		const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
 			headers: {
 				'Authorization': `Bearer ${token}`,
 			},
 		});
+
+		// TODO catch errors
 		const obj = await response.json();
 		if (obj.is_playing) {
 			return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
@@ -120,19 +134,28 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 	/** This is an `editorCallback` function which fetches the current song an inserts it into the editor. */
 	insertSongLink = async (editor: Editor, view: MarkdownView) => {
-		const token = this.getToken()
+		let token = this.getToken()
 
 		// Handle the case where the function is used without being authed
 		// Also, we should handle if the token is expired here
-		if (token === null) {
+		if (token?.value === null) {
 			// Either open settings and have the user sign in there OR
 			// Open the sign in right here and (todo) wait for it to finish before calling insert song link again
 			// await this.openSpotifyAuthModal()
 			// this.insertSongLink(editor, view)
 			new Notice('❌ Could not get song link');
+
+			// Get a refresh token
+		} else if (token.expiresAt && this.isExpired(token.expiresAt)) {
+			if (token.refreshToken) {
+				const tokenResponse = await refreshToken(token.refreshToken);
+				console.log("refreshed token")
+				this.storeToken(tokenResponse)
+				token = this.getToken()
+			}
 		}
 
-		const song = await this.fetchCurrentSong();
+		const song = await this.fetchCurrentSong(token.value!);
 		if (song === undefined) {
 			new Notice('❌ No song playing');
 			return
@@ -182,8 +205,8 @@ class SettingTab extends PluginSettingTab {
 		// Check for token and fetch profile if we have one
 		// TODO: We should also check expiration here
 		const token = this.plugin.getToken();
-		if (token) {
-			fetchProfile(token).then((p) => this.profile = p);
+		if (token?.value !== null) {
+			fetchProfile(token.value).then((p) => this.profile = p);
 		}
 
 	}
@@ -196,8 +219,8 @@ class SettingTab extends PluginSettingTab {
 		const token = this.plugin.getToken(); // TODO: Check expiration
 
 		// When we display, if there is a token, but not profile, fetch the profile
-		if (token !== null && this.profile === undefined) {
-			fetchProfile(token).then((p) => {
+		if (token?.value !== null && this.profile === undefined) {
+			fetchProfile(token.value).then((p) => {
 				this.profile = p
 				this.display()
 			});
@@ -207,7 +230,7 @@ class SettingTab extends PluginSettingTab {
 		if (this.profile !== undefined) {
 			const spotifyProfile = stack.createEl("div", {cls: "profile"} )
 			const image = spotifyProfile.createEl("img", {cls: "spotify-profile-img"})
-			image.src = this.profile.images[0].url
+			image.src = this.profile?.images?.[0].url
 			spotifyProfile.createEl("span", {text: this.profile.display_name, cls: "display-name"})
 		}
 
