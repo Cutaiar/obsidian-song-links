@@ -20,8 +20,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 	// And: https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
 	openSpotifyAuthModal = (onComplete?: () => void) => {
 		// Build connect link
-		// TODO: Not sure if this is a valid redirect URI (network tab has failure) but this works
-		const redirectUri = "obsidian://callback";
+		const redirectUri = "obsidian://callback"; // Not sure if this is a reasonable redirect URI but this works
 		const {verifier, challenge} = generateCodeChallenge()
 		const authUrl = new URL(authEndpoint) 
 		const params =  {
