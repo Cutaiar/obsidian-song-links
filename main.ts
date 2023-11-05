@@ -27,7 +27,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		const params =  {
 			response_type: 'code',
 			client_id: clientId,
-			scope: scopes.join("%20"), // TODO do we need to encode %20? or will urlsearchaparams do it?
+			scope: scopes.join(" "),
 			code_challenge_method: 'S256',
 			code_challenge: challenge,
 			redirect_uri: redirectUri,
