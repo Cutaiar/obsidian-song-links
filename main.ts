@@ -1,6 +1,7 @@
 import electron from 'electron'
 import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab } from 'obsidian';
-import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, refreshToken } from 'auth';
+import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, refreshToken, fetchProfile, SpotifyProfile, fetchCurrentSong } from 'spotifyAPI';
+import { clearToken, getToken, isExpired, storeToken } from 'localStorageToken';
 
 interface PluginSettings {
 	linkFormat?: string; // TODO: Implement this
@@ -10,12 +11,8 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	linkFormat: undefined
 }
 
-/** Return type for a song fetched from spotify */
-type Song = { link: string, name: string }
-
 export default class ObsidianSpotifyPlugin extends Plugin {
 	settings: PluginSettings;
-	localStorageKey = "obsidian-spotify-access-token"
 
 	// TODO: A way to detect a refresh the token
 	// Inspired by: https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
@@ -76,95 +73,53 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 		electron.remote.ipcMain.on("access-token-response", (event: Event, token: TokenResponse) => {
 			// TODO: This happens more often than it should. Add a console log to see.
-			this.storeToken(token)
+			storeToken(token)
 			authWindow.destroy()
 			onComplete?.();
 			// TODO: Add onfail?
 		});
 	}
 
-	/** Store the token in local storage */
-	storeToken = (token: TokenResponse) => {
-		const expiresAt = Math.floor(Date.now() / 1000) + token.expires_in;
-		localStorage.setItem("access-token-expires-at", expiresAt.toString())
-		localStorage.setItem("obsidian-spotify-refresh-token", token.refresh_token)
-		localStorage.setItem(this.localStorageKey, token.access_token)
-	}
-
-	/** Remove the token in local storage */
-	clearToken = () => {
-		localStorage.removeItem("access-token-expires-at")
-		localStorage.removeItem("obsidian-spotify-refresh-token")
-		localStorage.removeItem(this.localStorageKey)
-	}
-
-	/** Get the token in local storage */
-	getToken = () => {
-		const expiresAt = localStorage.getItem("access-token-expires-at")
-		const refreshToken = localStorage.getItem("obsidian-spotify-refresh-token")
-		const value = localStorage.getItem(this.localStorageKey)
-		return {value, expiresAt, refreshToken};
-	}
-
-	isExpired = (expiresAt: string) => {
-		return Date.now() > Number(expiresAt);
-		return true; // Uncomment to test this
-	}
 
 
-
-	/** Fetch the current playing song from spotify. Undefined if nothing playing 
-	 * `token` is expected to be a valid, non-expired, access token
-	*/
-	fetchCurrentSong = async (token: string): Promise<Song | undefined> => {
-		const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-			headers: {
-				'Authorization': `Bearer ${token}`,
-			},
-		});
-
-		// TODO catch errors
-		const obj = await response.json();
-		if (obj.is_playing) {
-			return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
-		} else {
-			return undefined;
-		}
-	}
 
 	/** This is an `editorCallback` function which fetches the current song an inserts it into the editor. */
 	insertSongLink = async (editor: Editor, view: MarkdownView) => {
-		let token = this.getToken()
+		let token = getToken()
 
-		// Handle the case where the function is used without being authed
-		// Also, we should handle if the token is expired here
-		if (token?.value === null) {
-			// Either open settings and have the user sign in there OR
-			// Open the sign in right here and (todo) wait for it to finish before calling insert song link again
-			// await this.openSpotifyAuthModal()
-			// this.insertSongLink(editor, view)
-			new Notice('❌ Could not get song link');
-
-			// Get a refresh token
-		} else if (token.expiresAt && this.isExpired(token.expiresAt)) {
-			if (token.refreshToken) {
-				const tokenResponse = await refreshToken(token.refreshToken);
+		// Handle case of expired token
+		if (token !== null && isExpired(token)) {
+			if (token.refresh_token) {
+				const tokenResponse = await refreshToken(token.refresh_token);
 				console.log("refreshed token")
-				this.storeToken(tokenResponse)
-				token = this.getToken()
+				storeToken(tokenResponse)
+				token = getToken()
 			}
 		}
 
-		const song = await this.fetchCurrentSong(token.value!);
+		// Handle the case where the function is used without being authed
+		if (token === null) {
+			// Either open settings and have the user sign in there
+			new Notice('❌ Connect Spotify in Plugin Settings');
+			return;
+		}
+
+		const song = await fetchCurrentSong(token.access_token);
+
+		// Handle case of no song playing
 		if (song === undefined) {
 			new Notice('❌ No song playing');
 			return
 		}
+
+		// If we get here, we are good to insert the song link
 		editor.replaceSelection(`[${song.name}](${song.link})`);
 		new Notice('✅ Added song link')
 	};
 
-	// Main onLoad for the plugin
+	/**
+	 * onload for the plugin. Simply load settings, add the plugins command, and register a SettingTab
+	 */
 	async onload() {
 		await this.loadSettings();
 
@@ -179,19 +134,25 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
+	/**
+	 * onunload for the plugin. TODO: Anything?
+	 */
 	onunload() {
-		// TODO: anything?
 	}
 
+	/**
+	 * Default loadSettings from docs
+	 */
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
-
+	/**
+	 * Default saveSettings from docs
+	 */
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
 }
-
 
 
 class SettingTab extends PluginSettingTab {
@@ -204,9 +165,9 @@ class SettingTab extends PluginSettingTab {
 
 		// Check for token and fetch profile if we have one
 		// TODO: We should also check expiration here
-		const token = this.plugin.getToken();
-		if (token?.value !== null) {
-			fetchProfile(token.value).then((p) => this.profile = p);
+		const token = getToken();
+		if (token !== null) {
+			fetchProfile(token.access_token).then((p) => this.profile = p);
 		}
 
 	}
@@ -214,13 +175,20 @@ class SettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
+
+		// Title for the settings page
 		containerEl.createEl('h2', { text: 'Manage your connection to Spotify' });
+
+		// Vertical stacked container for UI
 		const stack = containerEl.createDiv({cls: "stack"})
-		const token = this.plugin.getToken(); // TODO: Check expiration
+
+		// Every time we display, grab the token, so we can display a Spotify profile
+		// TODO: Check expiration?
+		const token = getToken();
 
 		// When we display, if there is a token, but not profile, fetch the profile
-		if (token?.value !== null && this.profile === undefined) {
-			fetchProfile(token.value).then((p) => {
+		if (token !== null && this.profile === undefined) {
+			fetchProfile(token.access_token).then((p) => {
 				this.profile = p
 				this.display()
 			});
@@ -234,6 +202,7 @@ class SettingTab extends PluginSettingTab {
 			spotifyProfile.createEl("span", {text: this.profile.display_name, cls: "display-name"})
 		}
 
+		// Container for buttons below
 		const buttons = containerEl.createDiv({cls:"buttons"})
 		
 		// Offer a way to connect
@@ -250,7 +219,7 @@ class SettingTab extends PluginSettingTab {
 				.setButtonText("Disconnect Spotify")
 				.setWarning()
 				.onClick(() => {
-					this.plugin.clearToken();
+					clearToken();
 					this.profile = undefined;
 					this.display()
 				})
@@ -258,21 +227,3 @@ class SettingTab extends PluginSettingTab {
 	}
 }
 
-// Profile fetching code
-interface SpotifyProfile {
-	display_name: string;
-	external_urls: Record<string, string>
-	images: [{height: number, width: number, url: string}]
-	// There is more we don't care about
-}
-
-const fetchProfile = async (accessToken: string): Promise<SpotifyProfile> => {
-	const response = await fetch('https://api.spotify.com/v1/me', {
-		headers: {
-			Authorization: 'Bearer ' + accessToken
-		}
-	});
-  
-	const data = await response.json();
-	return data;
-}

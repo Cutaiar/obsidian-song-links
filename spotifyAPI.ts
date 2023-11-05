@@ -83,3 +83,45 @@ export const refreshToken = async (refreshToken: string): Promise<TokenResponse>
  
      return response;
 }
+
+
+/** Return type for a song fetched from spotify */
+export type Song = { link: string, name: string }
+
+/** Fetch the current playing song from spotify. Undefined if nothing playing.
+ * `token` is expected to be a valid, non-expired, access token
+*/
+export const fetchCurrentSong = async (token: string): Promise<Song | undefined> => {
+  const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  // TODO catch errors
+  const obj = await response.json();
+  if (obj.is_playing) {
+    return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
+  } else {
+    return undefined;
+  }
+}
+
+// Profile fetching code
+export interface SpotifyProfile {
+	display_name: string;
+	external_urls: Record<string, string>
+	images: [{height: number, width: number, url: string}]
+	// There is more we don't care about
+}
+
+export const fetchProfile = async (accessToken: string): Promise<SpotifyProfile> => {
+	const response = await fetch('https://api.spotify.com/v1/me', {
+		headers: {
+			Authorization: 'Bearer ' + accessToken
+		}
+	});
+  
+	const data = await response.json();
+	return data;
+}
