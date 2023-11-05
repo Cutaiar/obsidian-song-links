@@ -27,10 +27,16 @@ export const clearToken = () => {
 }
 
 /** Get the token in local storage. May throw SyntaxError. Null return means no token exists. */
-export const getToken = (): StorageToken | null => {
-    const value = localStorage.getItem(localStorageKey)
-    // TODO: Shall we implement the refresh flow here?
-    return value ? JSON.parse(value) : null;
+export const getToken = (): StorageToken | undefined => {
+    const token = localStorage.getItem(localStorageKey)
+    if (token === null) {
+        return undefined;
+    }
+
+    // TODO: implement the refresh flow here
+
+    return JSON.parse(token);
+    
 }
 
 /** Check if we are past a given expiration time */

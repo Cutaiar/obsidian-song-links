@@ -87,15 +87,13 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		let token = getToken()
 
 		// Handle case of expired token
-		if (token !== null && isExpired(token)) {
-			if (token.refresh_token) {
-				const tokenResponse = await refreshToken(token.refresh_token); // TODO: Catch errors 
-				token = storeToken(tokenResponse)
-			}
+		if (token !== undefined && isExpired(token)) {
+			const tokenResponse = await refreshToken(token.refresh_token); // TODO: Catch errors 
+			token = storeToken(tokenResponse)
 		}
 
 		// Handle the case where the function is used without being authed
-		if (token === null) {
+		if (token === undefined) {
 			// Either open settings and have the user sign in there
 			new Notice('❌ Connect Spotify in Plugin Settings');
 			return;
@@ -163,7 +161,7 @@ class SettingTab extends PluginSettingTab {
 		// Check for token and fetch profile if we have one
 		// TODO: We should also check expiration here
 		const token = getToken();
-		if (token !== null) {
+		if (token !== undefined) {
 			fetchProfile(token.access_token).then((p) => this.profile = p);
 		}
 
@@ -184,7 +182,7 @@ class SettingTab extends PluginSettingTab {
 		const token = getToken();
 
 		// When we display, if there is a token, but not profile, fetch the profile
-		if (token !== null && this.profile === undefined) {
+		if (token !== undefined && this.profile === undefined) {
 			fetchProfile(token.access_token).then((p) => {
 				this.profile = p
 				this.display()
