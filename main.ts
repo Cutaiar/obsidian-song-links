@@ -89,10 +89,8 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		// Handle case of expired token
 		if (token !== null && isExpired(token)) {
 			if (token.refresh_token) {
-				const tokenResponse = await refreshToken(token.refresh_token);
-				console.log("refreshed token")
-				storeToken(tokenResponse)
-				token = getToken()
+				const tokenResponse = await refreshToken(token.refresh_token); // TODO: Catch errors 
+				token = storeToken(tokenResponse)
 			}
 		}
 

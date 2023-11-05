@@ -8,7 +8,7 @@ export interface StorageToken {
 	refresh_token: string
 }
 
-/** Store the access and refresh tokens, along with an expiration date in local storage.  */
+/** Store the access and refresh tokens, along with an expiration date in local storage. Returns the token that was stored for convenience.  */
 export const storeToken = (token: TokenResponse) => {
     const {access_token, refresh_token, expires_in} = token
     const expiresAt = Math.floor(Date.now() / 1000) + expires_in;
@@ -18,6 +18,7 @@ export const storeToken = (token: TokenResponse) => {
         refresh_token
     }
     localStorage.setItem(localStorageKey, JSON.stringify(authItems))
+    return authItems;
 }
 
 /** Remove the token in local storage */
