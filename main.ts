@@ -9,7 +9,6 @@ import { DEFAULT_SETTINGS, PluginSettings, SettingTab } from 'settings';
 export default class ObsidianSpotifyPlugin extends Plugin {
 	settings: PluginSettings;
 
-	// TODO: A way to detect a refresh the token
 	// Inspired by: https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
 	// And: https://authguidance.com/desktop-apps-overview/
 	// And: https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
