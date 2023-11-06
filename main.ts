@@ -1,15 +1,10 @@
 import electron from 'electron'
-import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab } from 'obsidian';
-import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, refreshToken, fetchProfile, SpotifyProfile, fetchCurrentSong } from 'spotifyAPI';
-import { clearToken, getToken, isExpired, storeToken } from 'localStorageToken';
+import { Editor, MarkdownView, Notice, Plugin } from 'obsidian';
+import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, fetchCurrentSong } from 'spotifyAPI';
+import { getToken, storeToken } from 'localStorageToken';
+import { DEFAULT_SETTINGS, PluginSettings, SettingTab } from 'settings';
 
-interface PluginSettings {
-	linkFormat?: string; // TODO: Implement this
-}
 
-const DEFAULT_SETTINGS: PluginSettings = {
-	linkFormat: undefined
-}
 
 export default class ObsidianSpotifyPlugin extends Plugin {
 	settings: PluginSettings;
@@ -63,8 +58,14 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 			}
 
 			// Exchange auth code for an access token response
-			// TODO: Error checking
 			const tokenResponse = await fetchToken(code, verifier, redirectUri)
+
+			// If there was an issue fetching the token, error out
+			if (tokenResponse === undefined) {
+				new Notice('❌ Could not get song link');
+				authWindow.destroy();
+				return;
+			}
 
 			// Send access token and related information to main window
 			electron.ipcRenderer.send("access-token-response", tokenResponse)
@@ -75,7 +76,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 			storeToken(token)
 			authWindow.destroy()
 			onComplete?.();
-			// TODO: Add onfail?
+			// TODO: Add onFail?
 		});
 	}
 
@@ -84,22 +85,17 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 	/** This is an `editorCallback` function which fetches the current song an inserts it into the editor. */
 	insertSongLink = async (editor: Editor, view: MarkdownView) => {
-		let token = getToken()
+		const token = await getToken()
 
-		// Handle case of expired token
-		if (token !== undefined && isExpired(token)) {
-			const tokenResponse = await refreshToken(token.refresh_token); // TODO: Catch errors 
-			token = storeToken(tokenResponse)
-		}
-
-		// Handle the case where the function is used without being authed
+		// Handle the case where the function is used without first having logged in
 		if (token === undefined) {
-			// Either open settings and have the user sign in there
+			// TODO Open settings and have the user sign in there
 			new Notice('❌ Connect Spotify in Plugin Settings');
 			return;
 		}
 
 		const song = await fetchCurrentSong(token.access_token);
+		// TODO: Add some kind of loading state for UX clarity
 
 		// Handle case of no song playing
 		if (song === undefined) {
@@ -148,77 +144,3 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 }
-
-
-class SettingTab extends PluginSettingTab {
-	plugin: ObsidianSpotifyPlugin;
-	profile: SpotifyProfile | undefined
-
-	constructor(app: App, plugin: ObsidianSpotifyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-
-		// Check for token and fetch profile if we have one
-		// TODO: We should also check expiration here
-		const token = getToken();
-		if (token !== undefined) {
-			fetchProfile(token.access_token).then((p) => this.profile = p);
-		}
-
-	}
-
-	display(): void {
-		const { containerEl } = this;
-		containerEl.empty();
-
-		// Title for the settings page
-		containerEl.createEl('h2', { text: 'Manage your connection to Spotify' });
-
-		// Vertical stacked container for UI
-		const stack = containerEl.createDiv({cls: "stack"})
-
-		// Every time we display, grab the token, so we can display a Spotify profile
-		// TODO: Check expiration?
-		const token = getToken();
-
-		// When we display, if there is a token, but not profile, fetch the profile
-		if (token !== undefined && this.profile === undefined) {
-			fetchProfile(token.access_token).then((p) => {
-				this.profile = p
-				this.display()
-			});
-		}
-
-		// If we have a profile to display, show it
-		if (this.profile !== undefined) {
-			const spotifyProfile = stack.createEl("div", {cls: "profile"} )
-			const image = spotifyProfile.createEl("img", {cls: "spotify-profile-img"})
-			image.src = this.profile?.images?.[0].url
-			spotifyProfile.createEl("span", {text: this.profile.display_name, cls: "display-name"})
-		}
-
-		// Container for buttons below
-		const buttons = containerEl.createDiv({cls:"buttons"})
-		
-		// Offer a way to connect
-		const buttonMessage = this.profile ?  "Refresh connection" : "Connect Spotify"
-		new ButtonComponent(buttons)
-			.setButtonText(buttonMessage)
-			.onClick(() => {
-				this.plugin.openSpotifyAuthModal(() => this.display())
-			})
-
-		// Offer a way to disconnect
-		if (this.profile !== undefined) {
-			new ButtonComponent(buttons)
-				.setButtonText("Disconnect Spotify")
-				.setWarning()
-				.onClick(() => {
-					clearToken();
-					this.profile = undefined;
-					this.display()
-				})
-		}
-	}
-}
-

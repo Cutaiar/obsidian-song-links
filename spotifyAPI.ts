@@ -40,7 +40,7 @@ export const generateCodeChallenge = () => {
     return {verifier: codeVerifier, challenge: codeChallenge}
 }
 
-export const fetchToken = async (code: string, verifier: string, redirectUri: string): Promise<TokenResponse> => {
+export const fetchToken = async (code: string, verifier: string, redirectUri: string): Promise<TokenResponse | undefined> => {
   
     const url = "https://accounts.spotify.com/api/token"
     const payload = {
@@ -58,12 +58,14 @@ export const fetchToken = async (code: string, verifier: string, redirectUri: st
     }
   
     const body = await fetch(url, payload);
-    const response = await body.json() as TokenResponse;
-  
-    return response;
+
+    if (body.ok) {
+      return await body.json() as TokenResponse;
+    }
+    return undefined;
   }
 
-export const refreshToken = async (refreshToken: string): Promise<TokenResponse> => {
+export const refreshToken = async (refreshToken: string): Promise<TokenResponse | undefined> => {
 
     const url = "https://accounts.spotify.com/api/token";
  
@@ -79,9 +81,11 @@ export const refreshToken = async (refreshToken: string): Promise<TokenResponse>
        }),
      }
      const body = await fetch(url, payload);
-     const response = await body.json();
- 
-     return response;
+
+     if (body.ok) {
+      return await body.json();
+     }
+     return undefined;
 }
 
 
@@ -115,13 +119,15 @@ export interface SpotifyProfile {
 	// There is more we don't care about
 }
 
-export const fetchProfile = async (accessToken: string): Promise<SpotifyProfile> => {
+export const fetchProfile = async (accessToken: string): Promise<SpotifyProfile | undefined> => {
 	const response = await fetch('https://api.spotify.com/v1/me', {
 		headers: {
 			Authorization: 'Bearer ' + accessToken
 		}
 	});
-  
-	const data = await response.json();
-	return data;
+
+  if (response.ok) {
+    return await response.json();
+  }
+	return undefined
 }
