@@ -3,13 +3,10 @@ import ObsidianSpotifyPlugin from "main";
 import { getToken, clearToken } from "localStorageToken";
 import { SpotifyProfile, fetchProfile } from "spotifyAPI";
 
-export interface PluginSettings {
-	linkFormat?: string; // TODO: Implement this
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ObsidianSpotifyPluginSettings {}
 
-export const DEFAULT_SETTINGS: PluginSettings = {
-	linkFormat: undefined
-}
+export const DEFAULT_SETTINGS: ObsidianSpotifyPluginSettings = {}
 
 export class SettingTab extends PluginSettingTab {
 	plugin: ObsidianSpotifyPlugin;

@@ -2,12 +2,12 @@ import electron from 'electron'
 import { Editor, MarkdownView, Notice, Plugin } from 'obsidian';
 import { TokenResponse, authEndpoint, clientId, generateCodeChallenge, fetchToken, scopes, fetchCurrentSong } from 'spotifyAPI';
 import { getToken, storeToken } from 'localStorageToken';
-import { DEFAULT_SETTINGS, PluginSettings, SettingTab } from 'settings';
+import { DEFAULT_SETTINGS, ObsidianSpotifyPluginSettings, SettingTab } from 'settings';
 
 
 
 export default class ObsidianSpotifyPlugin extends Plugin {
-	settings: PluginSettings;
+	settings: ObsidianSpotifyPluginSettings;
 
 	// Inspired by: 
 	// - https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
@@ -111,8 +111,8 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
-			id: 'add-song-link',
-			name: 'Add song link',
+			id: 'insert-song-link',
+			name: 'Insert song link',
 			editorCallback: this.insertSongLink
 		});
 

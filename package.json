@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-spotify",
 	"version": "0.1.0",
-	"description": "Add the currently playing song from Spotify to an Obsidian note",
+	"description": "Insert a link to the currently playing song on Spotify",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

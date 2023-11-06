@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-spotify",
 	"name": "Obsidian Spotify",
-	"description": "Add the currently playing song from Spotify to an Obsidian note",
+	"description": "Insert a link to the currently playing song on Spotify",
 	"author": "Dillon Cutaiar",
 	"authorUrl": "https://cutaiar.io",
 	"minAppVersion": "1.4.13",

@@ -2,13 +2,16 @@
 
 *For those that get inspired to write to music.*
 
-Adds the `Add song link` command to the palette which will insert a link to the current playing song on Spotify.
+Adds the `Insert song link` command to the palette which will insert a link to the current playing song on Spotify.
 
 ![GIF Demo](./obsidian-spotify-demo.gif)
 
 Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
 
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/cutaiar)
+
+> Note: This plugin has not yet been added to the [community plugin directory](https://obsidian.md/plugins)
+
 ## How to use
 
 1. Install the plugin
@@ -27,6 +30,5 @@ Information on releasing the plugin is in [Releasing](./Releasing.md)
 
 ## Todo
 
-- Toggleable/configurable option to add a tag with the song link for eay lookup
-- Refresh Token flow
 - Unauthorized link add flow
+- Setting to add a custom or default tag with the song link for easy lookup
