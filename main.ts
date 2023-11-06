@@ -67,17 +67,16 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 			electron.ipcRenderer.send("access-token-response", tokenResponse)
 		})
 
-		electron.remote.ipcMain.on("access-token-response", (event: Event, token: TokenResponse) => {
-			// TODO: This happens more often than it should. Add a console log to see.
+		electron.remote.ipcMain.once("access-token-response", (event: Event, token: TokenResponse) => {
 			storeToken(token)
 			authWindow.destroy()
 			onComplete?.();
 			// TODO: Add onFail?
+			// TODO: It's possible that we set up this one time listener and the signal is never sent (b/c of an error above). 
+			// In this case, we might later set up duplicate listeners. Address this.
+
 		});
 	}
-
-
-
 
 	/** This is an `editorCallback` function which fetches the current song an inserts it into the editor. */
 	insertSongLink = async (editor: Editor, view: MarkdownView) => {
