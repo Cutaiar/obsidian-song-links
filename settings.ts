@@ -54,12 +54,13 @@ export class SettingTab extends PluginSettingTab {
 		const buttons = containerEl.createDiv({cls:"buttons"})
 		
 		// Offer a way to connect
-		const buttonMessage = this.profile ?  "Refresh connection" : "Connect Spotify"
-		new ButtonComponent(buttons)
-			.setButtonText(buttonMessage)
-			.onClick(() => {
-				this.plugin.openSpotifyAuthModal(() => this.display())
-			})
+		if (this.profile === undefined) {
+			new ButtonComponent(buttons)
+				.setButtonText("Connect Spotify")
+				.onClick(() => {
+					this.plugin.openSpotifyAuthModal(() => this.display())
+				})
+		}
 
 		// Offer a way to disconnect
 		if (this.profile !== undefined) {
