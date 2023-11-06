@@ -1,10 +1,10 @@
 {
 	"id": "obsidian-spotify",
 	"name": "Obsidian Spotify",
-	"minAppVersion": "1.4.13",
 	"description": "Add the currently playing song from Spotify to an Obsidian note",
 	"author": "Dillon Cutaiar",
 	"authorUrl": "https://cutaiar.io",
+	"minAppVersion": "1.4.13",
 	"isDesktopOnly": true,
 	"fundingUrl": {
 		"Buy Me a Coffee": "https://www.buymeacoffee.com/cutaiar"
