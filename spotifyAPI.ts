@@ -92,8 +92,9 @@ export const refreshToken = async (refreshToken: string): Promise<TokenResponse 
 /** Return type for a song fetched from spotify */
 export type Song = { link: string, name: string }
 
-/** Fetch the current playing song from spotify. Undefined if nothing playing.
- * `token` is expected to be a valid, non-expired, access token
+/** 
+ * Fetch the current playing song from spotify. Undefined if nothing playing or an error occurred.
+ * `token` is expected to be a valid, non-expired, access token.
 */
 export const fetchCurrentSong = async (token: string): Promise<Song | undefined> => {
   const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
@@ -102,23 +103,33 @@ export const fetchCurrentSong = async (token: string): Promise<Song | undefined>
     },
   });
 
-  // TODO catch errors
-  const obj = await response.json();
-  if (obj.is_playing) {
-    return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
-  } else {
-    return undefined;
+  if (response.ok) {
+    try {
+      const obj = await response.json();
+      if (obj.is_playing) {
+        return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
+      }
+    } catch(e: unknown) {
+      console.error("Failed to parse response json in fetchCurrentSong: ", e)
+      return undefined;
+    }
   }
+  return undefined; 
 }
 
-// Profile fetching code
 export interface SpotifyProfile {
 	display_name: string;
 	external_urls: Record<string, string>
 	images: [{height: number, width: number, url: string}]
 	// There is more we don't care about
+  // TODO: Use the spotify types from npm?
 }
 
+/**
+ * Fetch a user's profile corresponding with accessToken from spotify.
+ * @param accessToken is expected to be a valid, non-expired, access token
+ * @returns Promise to a profile or undefined if an error occurred
+ */
 export const fetchProfile = async (accessToken: string): Promise<SpotifyProfile | undefined> => {
 	const response = await fetch('https://api.spotify.com/v1/me', {
 		headers: {

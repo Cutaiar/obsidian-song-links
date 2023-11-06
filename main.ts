@@ -9,9 +9,10 @@ import { DEFAULT_SETTINGS, PluginSettings, SettingTab } from 'settings';
 export default class ObsidianSpotifyPlugin extends Plugin {
 	settings: PluginSettings;
 
-	// Inspired by: https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
-	// And: https://authguidance.com/desktop-apps-overview/
-	// And: https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
+	// Inspired by: 
+	// - https://stackoverflow.com/questions/73636861/electron-how-to-get-an-auth-token-from-browserwindow-to-the-main-electron-app
+	// - https://authguidance.com/desktop-apps-overview/
+	// - https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
 	openSpotifyAuthModal = (onComplete?: () => void) => {
 		// Build connect link
 		const redirectUri = "obsidian://callback"; // Not sure if this is a reasonable redirect URI but this works
@@ -39,10 +40,6 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 		});
 		authWindow.loadURL(authUrl.toString());
 		authWindow.show();
-		// authWindow.webContents.openDevTools();
-
-		// TODO: Not sure i need this
-		// const defaultSession = electron.remote.session.defaultSession;
 
 		// When the user accepts, grab the auth code, exchange for an access token, and send that to the main window
 		// TODO: url is deprecated apparently: https://github.com/electron/electron/blob/main/docs/api/web-contents.md#event-will-navigate
