@@ -1,5 +1,6 @@
 {
 	"id": "obsidian-spotify",
+	"version": "0.1.0",
 	"name": "Obsidian Spotify",
 	"description": "Insert a link to the currently playing song on Spotify",
 	"author": "Dillon Cutaiar",
