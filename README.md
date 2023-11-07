@@ -30,6 +30,5 @@ Information on releasing the plugin is in [Releasing](./Releasing.md)
 
 ## Todo
 
-- lint/format all TS 
-- Unauthorized link add flow
+- Unauthorized link opens Settings
 - Setting to add a custom or default tag with the song link for easy lookup
