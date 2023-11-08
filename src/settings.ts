@@ -1,6 +1,6 @@
 import { PluginSettingTab, App, ButtonComponent } from "obsidian";
 import ObsidianSpotifyPlugin from "main";
-import { getToken, clearToken } from "localStorageToken";
+import { getToken, clearToken } from "tokenStorage";
 import { SpotifyProfile, fetchProfile } from "spotifyAPI";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -9,7 +9,7 @@ import {
   scopes,
   fetchCurrentSong,
 } from "spotifyAPI";
-import { getToken, storeToken } from "localStorageToken";
+import { getToken, storeToken } from "tokenStorage";
 import {
   DEFAULT_SETTINGS,
   ObsidianSpotifyPluginSettings,
