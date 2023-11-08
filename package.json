@@ -1,14 +1,13 @@
 {
-	"name": "obsidian-spotify",
+	"name": "spotify-links",
 	"version": "0.1.0",
-	"description": "Insert a link to the currently playing song on Spotify",
+	"description": "Insert a link to the song currently playing on your Spotify",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [],
 	"author": "Dillon Cutaiar",
 	"license": "MIT",
 	"devDependencies": {

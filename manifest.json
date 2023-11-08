@@ -1,8 +1,8 @@
 {
-	"id": "obsidian-spotify",
+	"id": "spotify-links",
 	"version": "0.1.0",
-	"name": "Obsidian Spotify",
-	"description": "Insert a link to the currently playing song on Spotify",
+	"name": "Spotify Links",
+	"description": "Insert a link to the song currently playing on your Spotify",
 	"author": "Dillon Cutaiar",
 	"authorUrl": "https://cutaiar.io",
 	"minAppVersion": "1.4.13",
