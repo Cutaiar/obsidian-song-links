@@ -1,20 +1,10 @@
 # Releasing
 
-## For Each Release
-- Update your `manifest.json` with your new version number and the minimum Obsidian version required for your latest release.
--  Use `npm version <patch|minor|major>` bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`.
-- Use the following commands to create an annotated tag with your new version number.
-  
-    ```cmd
-    git tag -a <version> -m "<version>"
-    git push origin <version>
-    ```
-    A github workflow will then run and create a draft release.
-- Find the draft in "releases", add release notes to let users know what happened in this release, and then select Publish release.
+1. Update your `minAppVersion` in your `manifest.json` with the new minimum Obsidian version required for your new release (if any).
+2. Use `npm version <patch|minor|major>`. This will:
+   -  Bump the version in `manifest.json`, `package.json`, and `package-lock.json`
+   -  Add an entry to `versions.json` indicating that this new version relies on the `minAppVersion` of Obsidian in your `manifest.json`
+   -  Create a commit and annotated tag corresponding with the new version
 
-## Adding the plugin to the community plugin list
-
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.``
+3. Push this commit. A github workflow will then run and create a draft release.
+4. On Github, find the draft in "Releases", add release notes, and select "Publish release".
