@@ -1,6 +1,6 @@
 import { TokenResponse, refreshToken } from "spotifyAPI";
 
-const localStorageKey = "obsidian-spotify-token";
+const localStorageKey = "obsidian-spotify-links-token";
 
 export interface StorageToken {
   access_token: string /** Access Token as fetched from from Spotify */;
@@ -8,7 +8,7 @@ export interface StorageToken {
   refresh_token: string /** Refresh Token as fetched from from Spotify */;
 }
 
-/** Store the access and refresh tokens, along with an expiration date in local storage. Returns the token that was stored for convenience.  */
+/** Store the access and refresh tokens, along with an expiration date in local storage. Returns the token that was stored for convenience. */
 export const storeToken = (token: TokenResponse) => {
   const { access_token, refresh_token, expires_in } = token;
   const expiresAt = Math.floor(Date.now() / 1000) + expires_in; // Calculate the epoch time of expiration in seconds
