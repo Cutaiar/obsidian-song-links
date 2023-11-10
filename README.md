@@ -33,8 +33,11 @@ You can help out by testing the beta version of this plugin!
 1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Open BRAT's settings and select `Add Beta Plugin`
 3. Paste the URL to [this repository](https://github.com/Cutaiar/obsidian-spotify-links) and select `Add Plugin`
-4. You can then use the plugin as you normally would (instructions above)
-5. Please [file an issue](https://github.com/Cutaiar/obsidian-spotify-links/issues/new) for any bugs you find
+4. Enable "Spotify Links" in Community plugins
+5. You can then use the plugin as you normally would (instructions above)
+6. Please [file an issue](https://github.com/Cutaiar/obsidian-spotify-links/issues/new) for any bugs you find
+
+If you need any more info about working with BRAT, please refer to their [documentation](https://tfthacker.com/Obsidian+Plugins+by+TfTHacker/BRAT+-+Beta+Reviewer's+Auto-update+Tool/Quick+guide+for+using+BRAT).
 
 ## ✅ Todo
 
