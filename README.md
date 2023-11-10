@@ -26,6 +26,16 @@ You can use `npm run build` to do a full build.
 
 Information on releasing the plugin is in [Releasing](./Releasing.md).
 
+## 👶 Beta testing with BRAT
+
+You can help out by testing the beta version of this plugin!
+
+1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat)
+2. Open BRAT's settings and select `Add Beta Plugin`
+3. Paste the URL to [this repository](https://github.com/Cutaiar/obsidian-spotify-links) and select `Add Plugin`
+4. You can then use the plugin as you normally would (instructions above)
+5. Please [file an issue](https://github.com/Cutaiar/obsidian-spotify-links/issues/new) for any bugs you find
+
 ## ✅ Todo
 
 - Unauthorized link opens Settings
