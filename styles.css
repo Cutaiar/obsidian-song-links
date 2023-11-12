@@ -6,6 +6,10 @@ CSS included with your plugin, and available in the app when plugin is enabled.
     border-radius: 50%;
     margin-right: var(--size-4-4);
     width: var(--size-4-12);
+    height: var(--size-4-12);
+    object-fit: cover;
+    object-position: center center;
+
 }
 
 .stack {
