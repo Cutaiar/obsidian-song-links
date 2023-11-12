@@ -120,14 +120,10 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
   /** Open Spotify Links settings page */
   openSettingsPage = () => {
-    // We need type gymnastics b/c Obsidian does not include app.setting in their types currently.
-    // https://github.com/obsidianmd/obsidian-api/issues/140
-    type AppWithSetting = typeof app & {
-      setting?: { open?: () => void; openTabById?: (id: string) => void };
-    };
-
-    (this.app as AppWithSetting).setting?.open?.();
-    (this.app as AppWithSetting).setting?.openTabById?.(this.manifest.id);
+    // We use optional chaining to handle the private Obsidian API carefully
+    // Unofficial types come from https://github.com/Fevol/obsidian-typings
+    this.app.setting?.open?.();
+    this.app.setting?.openTabById?.(this.manifest.id);
   };
 
   /**
