@@ -1,4 +1,4 @@
-import { PluginSettingTab, App, ButtonComponent } from "obsidian";
+import { PluginSettingTab, App, ButtonComponent, Notice } from "obsidian";
 import ObsidianSpotifyPlugin from "main";
 import { getToken, clearToken } from "tokenStorage";
 import { SpotifyProfile, fetchProfile } from "spotifyAPI";
@@ -21,8 +21,13 @@ export class SettingTab extends PluginSettingTab {
     // TODO: Add some kind of loading state for UX clarity
     const token = await getToken();
     if (token !== undefined && this.profile === undefined) {
-      this.profile = await fetchProfile(token.access_token);
+      const profile = await fetchProfile(token.access_token);
+      if (profile !== undefined) {
+        this.profile = profile;
       this.display();
+      } else {
+        new Notice("❌ Could not show profile");
+      }
     }
   }
 
