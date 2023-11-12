@@ -41,5 +41,4 @@ If you need any more info about working with BRAT, please refer to their [docume
 
 ## ✅ Todo
 
-- Unauthorized link opens Settings
 - Setting to add a custom or default tag with the song link for easy lookup
