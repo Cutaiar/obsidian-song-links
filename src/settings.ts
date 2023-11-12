@@ -2,7 +2,7 @@ import { PluginSettingTab, App, ButtonComponent, Notice } from "obsidian";
 import ObsidianSpotifyPlugin from "main";
 import { getToken, clearToken } from "tokenStorage";
 import { SpotifyProfile, fetchProfile } from "spotifyAPI";
-import fallbackProfile from "./spotify-user.svg";
+import SpotifyUserSVG from "./spotify-user.svg";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ObsidianSpotifyPluginSettings {}
@@ -57,10 +57,10 @@ export class SettingTab extends PluginSettingTab {
         image.src = this.profile?.images?.[0]?.url;
       } else {
         // Here, we handle the case where a user has no profile picture
-        const i = spotifyProfile.createEl("div", {
+        const bg = spotifyProfile.createEl("div", {
           cls: "spotify-profile-no-img",
         });
-        i.innerHTML = fallbackProfile; // Gross, is there another way?
+        bg.innerHTML = SpotifyUserSVG; // TODO: Gross, is there another way?
       }
 
       spotifyProfile.createEl("span", {

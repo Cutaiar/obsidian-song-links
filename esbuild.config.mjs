@@ -1,7 +1,6 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
-import svg from "esbuild-plugin-svg";
 
 const prod = process.argv[2] === "production";
 
@@ -29,7 +28,7 @@ const context = await esbuild.context({
   logLevel: "info",
   sourcemap: prod ? false : "inline",
   treeShaking: true,
-  plugins: [svg()],
+  loader: { ".svg": "text" },
   outfile: "main.js",
 });
 
