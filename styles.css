@@ -1,7 +1,18 @@
-/*
-CSS included with your plugin, and available in the app when plugin is enabled.
-*/
+/* CSS included with your plugin, and available in the app when plugin is enabled. */
 
+/** Provides a spotify-aligned background circle for the "user" be centered inside */
+.spotify-profile-no-img {
+    border-radius: 50%;
+    margin-right: var(--size-4-4);
+    width: var(--size-4-12);
+    height: var(--size-4-12);
+    background-color: #282828;
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+}
+
+/** Crops and rounds a users spotify profile image */
 .spotify-profile-img {
     border-radius: 50%;
     margin-right: var(--size-4-4);
@@ -9,7 +20,6 @@ CSS included with your plugin, and available in the app when plugin is enabled.
     height: var(--size-4-12);
     object-fit: cover;
     object-position: center center;
-
 }
 
 .stack {
