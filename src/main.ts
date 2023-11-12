@@ -99,8 +99,8 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
     // Handle the case where the function is used without first having logged in
     if (token === undefined) {
-      // TODO Open settings and have the user sign in there
-      new Notice("❌ Connect Spotify in Plugin Settings");
+      new Notice("🎵 Connect Spotify in settings first");
+      this.openSettingsPage();
       return;
     }
 
@@ -116,6 +116,14 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     // If we get here, we are good to insert the song link
     editor.replaceSelection(`[${song.name}](${song.link})`);
     new Notice("✅ Added song link");
+  };
+
+  /** Open Spotify Links settings page */
+  openSettingsPage = () => {
+    // We use optional chaining to handle the private Obsidian API carefully
+    // Unofficial types come from https://github.com/Fevol/obsidian-typings
+    this.app.setting?.open?.();
+    this.app.setting?.openTabById?.(this.manifest.id);
   };
 
   /**
