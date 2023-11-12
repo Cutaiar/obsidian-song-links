@@ -2,6 +2,7 @@ import { PluginSettingTab, App, ButtonComponent, Notice } from "obsidian";
 import ObsidianSpotifyPlugin from "main";
 import { getToken, clearToken } from "tokenStorage";
 import { SpotifyProfile, fetchProfile } from "spotifyAPI";
+import fallbackProfile from "./spotify-user.svg";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ObsidianSpotifyPluginSettings {}
@@ -24,7 +25,7 @@ export class SettingTab extends PluginSettingTab {
       const profile = await fetchProfile(token.access_token);
       if (profile !== undefined) {
         this.profile = profile;
-      this.display();
+        this.display();
       } else {
         new Notice("❌ Could not show profile");
       }
@@ -47,10 +48,21 @@ export class SettingTab extends PluginSettingTab {
     // If we have a profile to display, show it
     if (this.profile !== undefined) {
       const spotifyProfile = stack.createEl("div", { cls: "profile" });
-      const image = spotifyProfile.createEl("img", {
-        cls: "spotify-profile-img",
-      });
-      image.src = this.profile?.images?.[0].url;
+
+      const imageUrl = this.profile?.images?.[0]?.url;
+      if (imageUrl) {
+        const image = spotifyProfile.createEl("img", {
+          cls: "spotify-profile-img",
+        });
+        image.src = this.profile?.images?.[0]?.url;
+      } else {
+        // Here, we handle the case where a user has no profile picture
+        const i = spotifyProfile.createEl("div", {
+          cls: "spotify-profile-no-img",
+        });
+        i.innerHTML = fallbackProfile; // Gross, is there another way?
+      }
+
       spotifyProfile.createEl("span", {
         text: this.profile.display_name,
         cls: "display-name",
