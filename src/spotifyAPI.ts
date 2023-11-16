@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
+import { RequestUrlParam, requestUrl } from "obsidian";
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
-
 export const clientId = "f73730e86de14041b47fc683e619fd8b";
 export const scopes = ["user-read-currently-playing"];
 
@@ -41,13 +41,18 @@ export const generateCodeChallenge = () => {
   return { verifier: codeVerifier, challenge: codeChallenge };
 };
 
+/* mimic https://developer.mozilla.org/en-US/docs/Web/API/Response/ok */
+const ok = (status: number) => {
+  return status >= 200 && status <= 299;
+};
+
 export const fetchToken = async (
   code: string,
   verifier: string,
   redirectUri: string
 ): Promise<TokenResponse | undefined> => {
-  const url = "https://accounts.spotify.com/api/token";
-  const payload = {
+  const params: RequestUrlParam = {
+    url: "https://accounts.spotify.com/api/token",
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -58,13 +63,13 @@ export const fetchToken = async (
       code,
       redirect_uri: redirectUri,
       code_verifier: verifier,
-    }),
+    }).toString(),
   };
 
-  const body = await fetch(url, payload);
+  const res = await requestUrl(params);
 
-  if (body.ok) {
-    return (await body.json()) as TokenResponse;
+  if (ok(res.status)) {
+    return res.json;
   }
   return undefined;
 };
@@ -72,9 +77,8 @@ export const fetchToken = async (
 export const refreshToken = async (
   refreshToken: string
 ): Promise<TokenResponse | undefined> => {
-  const url = "https://accounts.spotify.com/api/token";
-
-  const payload = {
+  const params: RequestUrlParam = {
+    url: "https://accounts.spotify.com/api/token",
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -83,12 +87,12 @@ export const refreshToken = async (
       grant_type: "refresh_token",
       refresh_token: refreshToken,
       client_id: clientId,
-    }),
+    }).toString(),
   };
-  const body = await fetch(url, payload);
+  const res = await requestUrl(params);
 
-  if (body.ok) {
-    return await body.json();
+  if (ok(res.status)) {
+    return res.json;
   }
   return undefined;
 };
@@ -103,18 +107,17 @@ export type Song = { link: string; name: string };
 export const fetchCurrentSong = async (
   token: string
 ): Promise<Song | undefined> => {
-  const response = await fetch(
-    "https://api.spotify.com/v1/me/player/currently-playing",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const params: RequestUrlParam = {
+    url: "https://api.spotify.com/v1/me/player/currently-playing",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await requestUrl(params);
 
-  if (response.ok) {
+  if (ok(res.status)) {
     try {
-      const obj = await response.json();
+      const obj = res.json;
       if (obj.is_playing) {
         return { link: obj.item?.external_urls.spotify, name: obj.item?.name };
       }
@@ -142,14 +145,16 @@ export interface SpotifyProfile {
 export const fetchProfile = async (
   accessToken: string
 ): Promise<SpotifyProfile | undefined> => {
-  const response = await fetch("https://api.spotify.com/v1/me", {
+  const params = {
+    url: "https://api.spotify.com/v1/me",
     headers: {
       Authorization: "Bearer " + accessToken,
     },
-  });
+  };
+  const res = await requestUrl(params);
 
-  if (response.ok) {
-    return await response.json();
+  if (ok(res.status)) {
+    return res.json;
   }
   return undefined;
 };
