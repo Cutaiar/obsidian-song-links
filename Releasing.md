@@ -1,7 +1,7 @@
 # Releasing
 
 1. Update your `minAppVersion` in your `manifest.json` with the new minimum Obsidian version required for your new release (if any).
-2. Use `npm version <patch|minor|major>`. This will:
+2. Use `npm version <major|minor|patch>`. This will:
    -  Bump the version in `manifest.json`, `package.json`, and `package-lock.json`
    -  Add an entry to `versions.json` indicating that this new version relies on the `minAppVersion` of Obsidian in your `manifest.json`
    -  Create a commit and annotated tag corresponding with the new version
