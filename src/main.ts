@@ -6,12 +6,10 @@ import electron, {
 import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
 import {
   TokenResponse,
-  authEndpoint,
-  clientId,
-  generateCodeChallenge,
   fetchToken,
-  scopes,
   fetchCurrentSong,
+  redirectUri,
+  buildAuthUrlAndVerifier,
 } from "spotifyAPI";
 import { getToken, storeToken } from "tokenStorage";
 import {
@@ -28,21 +26,10 @@ export default class ObsidianSpotifyPlugin extends Plugin {
   // - https://authguidance.com/desktop-apps-overview/
   // - https://stackoverflow.com/questions/64530295/what-redirect-uri-should-i-use-for-an-authorization-call-used-in-an-electron-app
   openSpotifyAuthModal = (onComplete?: () => void) => {
-    // Build connect link
-    const redirectUri = "obsidian://spotify-links-callback";
-    const { verifier, challenge } = generateCodeChallenge();
-    const authUrl = new URL(authEndpoint);
-    const params = {
-      response_type: "code",
-      client_id: clientId,
-      scope: scopes.join(" "),
-      code_challenge_method: "S256",
-      code_challenge: challenge,
-      redirect_uri: redirectUri,
-    };
-    authUrl.search = new URLSearchParams(params).toString();
+    // Build the authorization URL
+    const [authUrl, verifier] = buildAuthUrlAndVerifier();
 
-    // Open an auth window
+    // Open a window to that url
     // @ts-ignore remote is available in obsidian currently
     const authWindow = new electron.remote.BrowserWindow({
       width: 800,
@@ -53,9 +40,10 @@ export default class ObsidianSpotifyPlugin extends Plugin {
         webSecurity: false,
       },
     });
-    authWindow.loadURL(authUrl.toString());
+    authWindow.loadURL(authUrl);
     authWindow.show();
 
+    // The channel through which the auth window will communicate with the main process
     const accessTokenChannel = "access-token-response";
 
     // If the user accepts, grab the auth code, exchange for an access token, and send that to the main window
