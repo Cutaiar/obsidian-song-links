@@ -56,16 +56,42 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     authWindow.loadURL(authUrl.toString());
     authWindow.show();
 
-    // When the user accepts, grab the auth code, exchange for an access token, and send that to the main window
+    const accessTokenChannel = "access-token-response";
+
+    // If the user accepts, grab the auth code, exchange for an access token, and send that to the main window
+    // All other navigations are ignored
     authWindow.webContents.on(
       "will-navigate",
       async (event: Event<WebContentsWillNavigateEventParams>) => {
-        const code = new URL(event.url).searchParams.get("code");
+        // Ignore all navigations that are not clicking the accept button in the auth flow
+        if (!event.url.includes(redirectUri)) {
+          console.log(event.url);
+          return;
+        }
+
+        // Otherwise the user has accepted
+        const params = new URL(event.url).searchParams;
+        const code = params.get("code");
+        const error = params.get("error");
+
+        // Helper to issue a notification, console error, and remove the
+        const bail = (error: string) => {
+          new Notice("❌ There was an issue signing you in");
+          console.error("Error encountered during auth flow: " + error);
+          // @ts-ignore remote is available in obsidian currently
+          electron.remote.ipcMain.removeAllListeners(accessTokenChannel);
+          authWindow.destroy();
+        };
+
+        // If we didn't get an auth code, error out
+        if (error) {
+          bail(error);
+          return;
+        }
 
         // If we didn't get an auth code, error out
         if (code === null) {
-          new Notice("❌ Could not get song link");
-          authWindow.destroy();
+          bail("code not present");
           return;
         }
 
@@ -73,27 +99,23 @@ export default class ObsidianSpotifyPlugin extends Plugin {
         const tokenResponse = await fetchToken(code, verifier, redirectUri);
 
         // If there was an issue fetching the token, error out
-        if (tokenResponse === undefined) {
-          new Notice("❌ Could not get song link");
-          authWindow.destroy();
+        if (!tokenResponse) {
+          bail("issue fetching token");
           return;
         }
 
         // Send access token and related information to main window
-        electron.ipcRenderer.send("access-token-response", tokenResponse);
+        electron.ipcRenderer.send(accessTokenChannel, tokenResponse);
       }
     );
 
     // @ts-ignore remote is available in obsidian currently
     electron.remote.ipcMain.once(
-      "access-token-response",
+      accessTokenChannel,
       (event: IpcMainEvent, token: TokenResponse) => {
         storeToken(token);
         authWindow.destroy();
         onComplete?.();
-        // TODO: Add onFail?
-        // TODO: It's possible that we set up this one time listener and the signal is never sent (b/c of an error above).
-        // In this case, we might later set up duplicate listeners. Address this.
       }
     );
   };
