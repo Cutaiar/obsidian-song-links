@@ -51,18 +51,18 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     authWindow.webContents.on(
       "will-navigate",
       async (event: Event<WebContentsWillNavigateEventParams>) => {
+        const url = new URL(event.url);
         // Ignore all navigations that are not clicking the accept button in the auth flow
-        if (!event.url.includes(redirectUri)) {
-          console.log(event.url);
+        if (!url.href.startsWith(redirectUri)) {
+          // TODO: Would it be better to check if url.protocol === "obsidian:"?
           return;
         }
 
-        // Otherwise the user has accepted
-        const params = new URL(event.url).searchParams;
-        const code = params.get("code");
-        const error = params.get("error");
+        // Otherwise the user has accepted, grab the code and a potential error
+        const code = url.searchParams.get("code");
+        const error = url.searchParams.get("error");
 
-        // Helper to issue a notification, console error, and remove the
+        // Set up a helper to issue a notification, console error, and remove the listener on accessTokenChannel
         const bail = (error: string) => {
           new Notice("❌ There was an issue signing you in");
           console.error("Error encountered during auth flow: " + error);
