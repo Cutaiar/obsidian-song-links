@@ -4,6 +4,7 @@ import { RequestUrlParam, requestUrl } from "obsidian";
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 export const clientId = "f73730e86de14041b47fc683e619fd8b";
 export const scopes = ["user-read-currently-playing"];
+export const redirectUri = "obsidian://spotify-links-callback";
 
 export interface TokenResponse {
   access_token: string;
@@ -34,11 +35,26 @@ const base64encode = (input: Buffer) => {
     .replace(/\//g, "_");
 };
 
-export const generateCodeChallenge = () => {
+const generateCodeChallenge = () => {
   const codeVerifier = generateRandomString(64);
   const hashed = sha256(codeVerifier);
   const codeChallenge = base64encode(hashed);
   return { verifier: codeVerifier, challenge: codeChallenge };
+};
+
+export const buildAuthUrlAndVerifier = () => {
+  const { verifier, challenge } = generateCodeChallenge();
+  const authUrl = new URL(authEndpoint);
+  const params = {
+    response_type: "code",
+    client_id: clientId,
+    scope: scopes.join(" "),
+    code_challenge_method: "S256",
+    code_challenge: challenge,
+    redirect_uri: redirectUri,
+  };
+  authUrl.search = new URLSearchParams(params).toString();
+  return [authUrl.toString(), verifier];
 };
 
 /* mimic https://developer.mozilla.org/en-US/docs/Web/API/Response/ok */
