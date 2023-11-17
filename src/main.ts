@@ -1,4 +1,8 @@
-import electron from "electron";
+import electron, {
+  IpcMainEvent,
+  Event,
+  WebContentsWillNavigateEventParams,
+} from "electron";
 import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
 import {
   TokenResponse,
@@ -39,6 +43,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     authUrl.search = new URLSearchParams(params).toString();
 
     // Open an auth window
+    // @ts-ignore remote is available in obsidian currently
     const authWindow = new electron.remote.BrowserWindow({
       width: 800,
       height: 600,
@@ -52,11 +57,10 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     authWindow.show();
 
     // When the user accepts, grab the auth code, exchange for an access token, and send that to the main window
-    // TODO: url is deprecated apparently: https://github.com/electron/electron/blob/main/docs/api/web-contents.md#event-will-navigate
     authWindow.webContents.on(
       "will-navigate",
-      async (event: Event, url: string) => {
-        const code = new URL(url).searchParams.get("code");
+      async (event: Event<WebContentsWillNavigateEventParams>) => {
+        const code = new URL(event.url).searchParams.get("code");
 
         // If we didn't get an auth code, error out
         if (code === null) {
@@ -80,9 +84,10 @@ export default class ObsidianSpotifyPlugin extends Plugin {
       }
     );
 
+    // @ts-ignore remote is available in obsidian currently
     electron.remote.ipcMain.once(
       "access-token-response",
-      (event: Event, token: TokenResponse) => {
+      (event: IpcMainEvent, token: TokenResponse) => {
         storeToken(token);
         authWindow.destroy();
         onComplete?.();
