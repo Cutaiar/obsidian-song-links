@@ -12,7 +12,7 @@ Adds an `Insert song link` command to the palette which inserts a link to the so
 
 Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
 
-[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="120">](https://www.buymeacoff❤️❤️❤️ee.com/cutaiar)
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="120">](https://www.buymeacoffee.com/cutaiar)
 
 ## ❓ How to use
 
