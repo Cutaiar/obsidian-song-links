@@ -1,8 +1,8 @@
 # Obsidian Spotify Links
 
-> ❤️ Thank you to the ~70 users who have downloaded this plugin.
+> [!check] Thank you to the ~200 users who have downloaded this plugin ❤️
 
-> ❗️ We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-spotify-links/issues/5) from Spotify to make it publicly available. Until then I can manually authorize your account. Please reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
+> [!warning] We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-spotify-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
 
 For those that get inspired to write by music, a small plugin connecting Spotify to [Obsidian.md](https://obsidian.md/).
 
