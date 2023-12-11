@@ -1,8 +1,9 @@
 # Obsidian Spotify Links
 
-> ❤️ Thank you to the ~70 users who have downloaded this plugin.
-
-> ❗️ We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-spotify-links/issues/5) from Spotify to make it publicly available. Until then I can manually authorize your account. Please reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
+> [!WARNING]
+> Thank you to the ~200 users who have downloaded this plugin ❤️
+>
+> We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-spotify-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
 
 For those that get inspired to write by music, a small plugin connecting Spotify to [Obsidian.md](https://obsidian.md/).
 
@@ -12,7 +13,7 @@ Adds an `Insert song link` command to the palette which inserts a link to the so
 
 Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
 
-[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="120">](https://www.buymeacoff❤️❤️❤️ee.com/cutaiar)
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="120">](https://www.buymeacoffee.com/cutaiar)
 
 ## ❓ How to use
 
