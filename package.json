@@ -1,6 +1,6 @@
 {
 	"name": "spotify-links",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Insert a link to the song currently playing on your Spotify",
 	"main": "main.js",
 	"scripts": {
