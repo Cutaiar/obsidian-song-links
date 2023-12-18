@@ -51,10 +51,14 @@ export class SettingTab extends PluginSettingTab {
 
       const imageUrl = this.profile?.images?.[0]?.url;
       if (imageUrl) {
-        const image = spotifyProfile.createEl("img", {
-          cls: "spotify-profile-img",
+        // const image = spotifyProfile.createEl("img", {
+        //   cls: "spotify-profile-img",
+        // });
+        // image.src = this.profile?.images?.[0]?.url;
+
+        const d = spotifyProfile.createEl("div", {
+          cls: "spotify-profile-no-img shine",
         });
-        image.src = this.profile?.images?.[0]?.url;
       } else {
         // Here, we handle the case where a user has no profile picture
         const bg = spotifyProfile.createEl("div", {

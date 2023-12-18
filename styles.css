@@ -9,7 +9,7 @@
     background-color: #282828;
     display: flex;
     align-items: center;
-    justify-content: center;   
+    justify-content: center;
 }
 
 /** Crops and rounds a users spotify profile image */
@@ -32,7 +32,9 @@
     flex-direction: row;
     align-items: center;
     margin-bottom: var(--size-4-4);
+    position: relative;
 }
+
 .display-name {
     font-size: var(--font-ui-larger);
     font-weight: var(--font-semibold);
@@ -44,4 +46,29 @@
     flex-direction: row;
     align-items: center;
     gap: var(--size-4-4);
+}
+
+/* based on https://codepen.io/umng/pen/xMXXRj*/
+.shine {
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-repeat: no-repeat;
+    background-size: var(--size-4-24) var(--size-4-12);
+    display: inline-block;
+    position: relative;
+
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeholderShimmer;
+    animation-timing-function: linear;
+}
+
+@keyframes placeholderShimmer {
+    0% {
+        background-position: -48 0;
+    }
+
+    100% {
+        background-position: 48px 0;
+    }
 }
