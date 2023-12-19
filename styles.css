@@ -32,7 +32,6 @@
     flex-direction: row;
     align-items: center;
     margin-bottom: var(--size-4-4);
-    position: relative;
 }
 
 .display-name {
