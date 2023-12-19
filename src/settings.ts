@@ -22,11 +22,14 @@ export class SettingTab extends PluginSettingTab {
   async refreshProfile() {
     const token = await getToken();
     if (token !== undefined && this.profile === undefined) {
+      this.loading = true;
       const profile = await fetchProfile(token.access_token);
       if (profile !== undefined) {
         this.profile = profile;
+        this.loading = false;
         this.display();
       } else {
+        this.loading = false;
         new Notice("❌ Could not show profile");
       }
     }
@@ -53,6 +56,7 @@ export class SettingTab extends PluginSettingTab {
       loadingProfile.createEl("span", {
         cls: "loading-name shine",
       });
+      return;
     }
 
     // If we have a profile to display, show it
