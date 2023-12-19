@@ -67,9 +67,12 @@ export class SettingTab extends PluginSettingTab {
         bg.innerHTML = SpotifyUserSVG; // TODO: Gross, is there another way?
       }
 
-      spotifyProfile.createEl("span", {
-        text: this.profile.display_name,
-        cls: "display-name",
+      // spotifyProfile.createEl("span", {
+      //   text: this.profile.display_name,
+      //   cls: "display-name",
+      // });
+      spotifyProfile.createEl("div", {
+        cls: "loading-name shine",
       });
     }
 

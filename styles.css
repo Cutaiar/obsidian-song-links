@@ -6,7 +6,7 @@
     margin-right: var(--size-4-4);
     width: var(--size-4-12);
     height: var(--size-4-12);
-    background-color: #282828;
+    background-color: hsl(0, 0%, 16%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,27 +48,25 @@
     gap: var(--size-4-4);
 }
 
-/* based on https://codepen.io/umng/pen/xMXXRj*/
-.shine {
-    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
-    background-repeat: no-repeat;
-    background-size: var(--size-4-24) var(--size-4-12);
-    display: inline-block;
-    position: relative;
+.loading-name {
+    background-color: hsl(0 0% 16%);
+    height: 1em;
+    width: 10em;
+}
 
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: placeholderShimmer;
-    animation-timing-function: linear;
+.shine {
+    background-image: linear-gradient(to right, hsl(0 0% 16% / 0%), hsl(0 0% 29% / 20%), hsl(0 0% 16% / 40%), hsl(0 0% 16% / 100%));
+    background-repeat: no-repeat;
+    background-size: 200%;
+    animation: placeholderShimmer 1s ease-in-out infinite forwards;
 }
 
 @keyframes placeholderShimmer {
     0% {
-        background-position: -48 0;
+        background-position: calc(-3 * var(--size-4-18)) 0;
     }
 
     100% {
-        background-position: 48px 0;
+        background-position: calc(2 * var(--size-4-18)) 0;
     }
 }
