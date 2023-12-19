@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS: ObsidianSpotifyPluginSettings = {};
 export class SettingTab extends PluginSettingTab {
   plugin: ObsidianSpotifyPlugin;
   profile: SpotifyProfile | undefined;
+  loading = false;
 
   constructor(app: App, plugin: ObsidianSpotifyPlugin) {
     super(app, plugin);
@@ -45,20 +46,26 @@ export class SettingTab extends PluginSettingTab {
     // Every time we display, grab the token, so we can display a Spotify profile
     this.refreshProfile();
 
+    if (this.loading) {
+      const loadingProfile = stack.createEl("div", { cls: "profile" });
+      loadingProfile.createEl("div", {
+        cls: "spotify-profile-no-img shine",
+      });
+      loadingProfile.createEl("span", {
+        cls: "loading-name shine",
+      });
+    }
+
     // If we have a profile to display, show it
     if (this.profile !== undefined) {
       const spotifyProfile = stack.createEl("div", { cls: "profile" });
 
       const imageUrl = this.profile?.images?.[0]?.url;
       if (imageUrl) {
-        // const image = spotifyProfile.createEl("img", {
-        //   cls: "spotify-profile-img",
-        // });
-        // image.src = this.profile?.images?.[0]?.url;
-
-        const d = spotifyProfile.createEl("div", {
-          cls: "spotify-profile-no-img shine",
+        const image = spotifyProfile.createEl("img", {
+          cls: "spotify-profile-img",
         });
+        image.src = this.profile?.images?.[0]?.url;
       } else {
         // Here, we handle the case where a user has no profile picture
         const bg = spotifyProfile.createEl("div", {
@@ -67,12 +74,9 @@ export class SettingTab extends PluginSettingTab {
         bg.innerHTML = SpotifyUserSVG; // TODO: Gross, is there another way?
       }
 
-      // spotifyProfile.createEl("span", {
-      //   text: this.profile.display_name,
-      //   cls: "display-name",
-      // });
-      spotifyProfile.createEl("div", {
-        cls: "loading-name shine",
+      spotifyProfile.createEl("span", {
+        text: this.profile.display_name,
+        cls: "display-name",
       });
     }
 
