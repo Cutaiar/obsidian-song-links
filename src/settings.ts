@@ -20,7 +20,6 @@ export class SettingTab extends PluginSettingTab {
   }
 
   async refreshProfile() {
-    // TODO: Add some kind of loading state for UX clarity
     const token = await getToken();
     if (token !== undefined && this.profile === undefined) {
       const profile = await fetchProfile(token.access_token);
