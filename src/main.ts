@@ -10,6 +10,7 @@ import {
   fetchCurrentSong,
   redirectUri,
   buildAuthUrlAndVerifier,
+  Song,
 } from "spotifyAPI";
 import { getToken, storeToken } from "tokenStorage";
 import {
@@ -128,9 +129,16 @@ export default class ObsidianSpotifyPlugin extends Plugin {
       return;
     }
 
+    const link = this.buildSongLink(song);
+
     // If we get here, we are good to insert the song link
-    editor.replaceSelection(`[${song.name}](${song.link})`);
+    editor.replaceSelection(link);
     new Notice("✅ Added song link");
+  };
+
+  /** Build a MD link to the song including attribution */
+  buildSongLink = (song: Song) => {
+    return `[${song.name} on Spotify](${song.link})`;
   };
 
   /** Open Spotify Links settings page */

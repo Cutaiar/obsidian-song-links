@@ -1,15 +1,15 @@
-# Obsidian Spotify Links
+# Obsidian Song Links
 
 > [!WARNING]
-> Thank you to the ~200 users who have downloaded this plugin ❤️
+> Thank you to the ~1300 users who have downloaded this plugin ❤️
 >
-> We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-spotify-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
+> We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-song-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
 
 For those that get inspired to write by music, a small plugin connecting Spotify to [Obsidian.md](https://obsidian.md/).
 
-Adds an `Insert song link` command to the palette which inserts a link to the song currently playing on your Spotify. [Demo](https://www.youtube.com/watch?v=Qzs3ssqKk2Y)
+Adds an `Insert song link` command to the palette which inserts a link to the song currently playing on your Spotify. [Demo](https://youtu.be/GaOau4shOQI)
 
-<a href="https://www.youtube.com/watch?v=Qzs3ssqKk2Y">![GIF Demo](./obsidian-spotify-links-demo.gif)</a>
+<a href="https://youtu.be/GaOau4shOQI">![GIF Demo](./obsidian-song-links-demo.gif)</a>
 
 Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
 
@@ -37,10 +37,10 @@ You can help out by testing the beta version of this plugin!
 
 1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Open BRAT's settings and select `Add Beta Plugin`
-3. Paste the URL to [this repository](https://github.com/Cutaiar/obsidian-spotify-links) and select `Add Plugin`
-4. Enable "Spotify Links" in Community plugins
+3. Paste the URL to [this repository](https://github.com/Cutaiar/obsidian-song-links) and select `Add Plugin`
+4. Enable "Song Links" in Community plugins
 5. You can then use the plugin as you normally would (instructions above)
-6. Please [file an issue](https://github.com/Cutaiar/obsidian-spotify-links/issues/new) for any bugs you find
+6. Please [file an issue](https://github.com/Cutaiar/obsidian-song-links/issues/new) for any bugs you find
 
 If you need any more info about working with BRAT, please refer to their [documentation](https://tfthacker.com/Obsidian+Plugins+by+TfTHacker/BRAT+-+Beta+Reviewer's+Auto-update+Tool/Quick+guide+for+using+BRAT).
 
