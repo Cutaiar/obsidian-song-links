@@ -7,9 +7,9 @@
 
 For those that get inspired to write by music, a small plugin connecting Spotify to [Obsidian.md](https://obsidian.md/).
 
-Adds an `Insert song link` command to the palette which inserts a link to the song currently playing on your Spotify. [Demo](https://www.youtube.com/watch?v=Qzs3ssqKk2Y)
+Adds an `Insert song link` command to the palette which inserts a link to the song currently playing on your Spotify. [Demo](https://youtu.be/GaOau4shOQI)
 
-<a href="https://www.youtube.com/watch?v=Qzs3ssqKk2Y">![GIF Demo](./obsidian-song-links-demo.gif)</a>
+<a href="https://youtu.be/GaOau4shOQI">![GIF Demo](./obsidian-song-links-demo.gif)</a>
 
 Of course the plugin is free, but if you'd like to support me, I greatly appreciate it.
 
