@@ -38,7 +38,7 @@ You can help out by testing the beta version of this plugin!
 1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Open BRAT's settings and select `Add Beta Plugin`
 3. Paste the URL to [this repository](https://github.com/Cutaiar/obsidian-song-links) and select `Add Plugin`
-4. Enable "Spotify Links" in Community plugins
+4. Enable "Song Links" in Community plugins
 5. You can then use the plugin as you normally would (instructions above)
 6. Please [file an issue](https://github.com/Cutaiar/obsidian-song-links/issues/new) for any bugs you find
 
