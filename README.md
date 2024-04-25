@@ -1,7 +1,7 @@
 # Obsidian Song Links
 
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699)
-![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links)
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699&style=flat-square)
+![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links?style=flat-square)
 
 > [!WARNING]
 > Thank you to the ~2000 users who have downloaded this plugin ❤️
