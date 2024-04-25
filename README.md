@@ -1,7 +1,10 @@
 # Obsidian Song Links
 
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699)
+![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links)
+
 > [!WARNING]
-> Thank you to the ~1300 users who have downloaded this plugin ❤️
+> Thank you to the ~2000 users who have downloaded this plugin ❤️
 >
 > We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-song-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
 
