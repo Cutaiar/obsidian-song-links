@@ -159,7 +159,7 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     const shouldNotify = !hasNotifiedPublicAvailability();
     if (shouldNotify) {
       const link = document.createElement("a");
-      link.appendText("Reconnect");
+      link.appendText("Connect");
       link.onclick = () => this.openSettingsPage();
 
       const df = new DocumentFragment();
