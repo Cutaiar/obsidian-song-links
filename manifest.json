@@ -1,6 +1,6 @@
 {
 	"id": "spotify-links",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"name": "Song Links",
 	"description": "Insert a link to the song currently playing on your Spotify",
 	"author": "Dillon Cutaiar",
