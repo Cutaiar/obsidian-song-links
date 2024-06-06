@@ -4,7 +4,7 @@ import { RequestUrlParam, requestUrl } from "obsidian";
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 export const clientId = "f73730e86de14041b47fc683e619fd8b";
 export const scopes = ["user-read-currently-playing"];
-export const redirectUri = "obsidian://spotify-links-callback";
+export const redirectUri = "obsidian://song-links-callback";
 
 export interface TokenResponse {
   access_token: string;
