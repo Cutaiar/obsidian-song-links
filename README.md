@@ -24,6 +24,13 @@ Of course the plugin is free, but if you'd like to support me, I greatly appreci
 2. Open the plugins settings to connect to Spotify
 3. Open and note and run `Insert song link` from the command palette
 
+## 🆘 Help & Feedback
+
+If something isn't working or you have an idea to improve this plugin, I'd love to hear about it. You can either
+
+1. [File an issue](https://github.com/Cutaiar/obsidian-song-links/issues/new) on Github
+2. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com)
+
 ## 🔨 Development
 
 1. Clone this repo
@@ -34,9 +41,13 @@ You can use `npm run build` to do a full build.
 
 Information on releasing the plugin is in [Releasing](./Releasing.md).
 
-## 👶 Beta testing with BRAT
+## 🌱 Become a Beta Tester
 
-You can help out by testing the beta version of this plugin!
+<details> 
+<summary>You can help out by testing the beta version of this plugin!
+
+</summary>
+<br/>
 
 1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Open BRAT's settings and select `Add Beta Plugin`
@@ -47,9 +58,4 @@ You can help out by testing the beta version of this plugin!
 
 If you need any more info about working with BRAT, please refer to their [documentation](https://tfthacker.com/Obsidian+Plugins+by+TfTHacker/BRAT+-+Beta+Reviewer's+Auto-update+Tool/Quick+guide+for+using+BRAT).
 
-## 🆘 Help
-
-If something isn't working or you have an idea to improve this plugin, I'd love to hear about it. You can either
-
-1. [File an issue](https://github.com/Cutaiar/obsidian-song-links/issues/new) on Github
-2. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com)
+</details>
