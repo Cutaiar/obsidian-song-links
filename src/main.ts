@@ -12,7 +12,12 @@ import {
   buildAuthUrlAndVerifier,
   Song,
 } from "spotifyAPI";
-import { getToken, storeToken } from "tokenStorage";
+import {
+  getToken,
+  hasNotifiedPublicAvailability,
+  setHasNotifiedPublicAvailability,
+  storeToken,
+} from "tokenStorage";
 import {
   DEFAULT_SETTINGS,
   ObsidianSpotifyPluginSettings,
@@ -149,6 +154,23 @@ export default class ObsidianSpotifyPlugin extends Plugin {
     this.app.setting?.openTabById?.(this.manifest.id);
   };
 
+  // Temporary notification of public availability
+  notifyPublicAvailability = () => {
+    const shouldNotify = !hasNotifiedPublicAvailability();
+    if (shouldNotify) {
+      const link = document.createElement("a");
+      link.appendText("Reconnect");
+      link.onclick = () => this.openSettingsPage();
+
+      const df = new DocumentFragment();
+      df.appendText("🔥 Song Links is now publicly available. ");
+      df.appendChild(link);
+      df.appendText(" your Spotify to start linking!");
+      new Notice(df, 0);
+      setHasNotifiedPublicAvailability();
+    }
+  };
+
   /**
    * onload for the plugin. Simply load settings, add the plugins command, and register a SettingTab
    */
@@ -164,6 +186,9 @@ export default class ObsidianSpotifyPlugin extends Plugin {
 
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new SettingTab(this.app, this));
+
+    // Temporary notification of public availability
+    this.notifyPublicAvailability();
   }
 
   /**
