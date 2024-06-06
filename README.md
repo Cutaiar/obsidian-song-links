@@ -1,12 +1,12 @@
 # Obsidian Song Links
 
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699)
-![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links)
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699&style=for-the-badge)
+![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links?style=for-the-badge)
 
-> [!WARNING]
-> Thank you to the ~2000 users who have downloaded this plugin ❤️
+> [!TIP] Song Links is publicly available!
+> Spotify approved our [Quota Extension](https://github.com/Cutaiar/obsidian-song-links/issues/5) and **Song Links is publicly available** as of `2024-06-06`.
 >
-> We are waiting on a [Quota Extension](https://github.com/Cutaiar/obsidian-song-links/issues/5) from Spotify to make the plugin publicly available. Until then, early adopters are appreciated – I can manually authorize your account. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com).
+> Thank you to the ~2000 users who have downloaded this plugin. Go ahead and start linking songs! ❤️
 
 For those that get inspired to write by music, a small plugin connecting Spotify to [Obsidian.md](https://obsidian.md/).
 
@@ -47,6 +47,9 @@ You can help out by testing the beta version of this plugin!
 
 If you need any more info about working with BRAT, please refer to their [documentation](https://tfthacker.com/Obsidian+Plugins+by+TfTHacker/BRAT+-+Beta+Reviewer's+Auto-update+Tool/Quick+guide+for+using+BRAT).
 
-## ✅ Todo
+## 🆘 Help
 
-- Setting to add a custom or default tag with the song link for easy lookup
+If something isn't working or you have an idea to improve this plugin, I'd love to hear about it. You can either
+
+1. [File an issue](https://github.com/Cutaiar/obsidian-song-links/issues/new) on Github
+2. Reach out to me at [`dmcutaiar@gmail.com`](mailto:dmcutaiar@gmail.com)
