@@ -3,7 +3,9 @@
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B'spotify-links'%5D.downloads&logo=obsidian&label=downloads&color=%23483699&style=for-the-badge)
 ![Release Version](https://img.shields.io/github/v/release/Cutaiar/obsidian-song-links?style=for-the-badge)
 
-> [!IMPORTANT] > **Song Links is publicly available!**
+> [!IMPORTANT]
+>
+> **Song Links is publicly available!**
 >
 > Spotify approved our [Quota Extension](https://github.com/Cutaiar/obsidian-song-links/issues/5) making the plugin available to everyone as of `2024-06-06`.
 >
