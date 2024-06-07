@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS: ObsidianSpotifyPluginSettings = {};
 export class SettingTab extends PluginSettingTab {
   plugin: ObsidianSpotifyPlugin;
   profile: SpotifyProfile | undefined;
+  loading = false;
 
   constructor(app: App, plugin: ObsidianSpotifyPlugin) {
     super(app, plugin);
@@ -19,14 +20,16 @@ export class SettingTab extends PluginSettingTab {
   }
 
   async refreshProfile() {
-    // TODO: Add some kind of loading state for UX clarity
     const token = await getToken();
     if (token !== undefined && this.profile === undefined) {
+      this.loading = true;
       const profile = await fetchProfile(token.access_token);
       if (profile !== undefined) {
         this.profile = profile;
+        this.loading = false;
         this.display();
       } else {
+        this.loading = false;
         new Notice("❌ Could not show profile");
       }
     }
@@ -44,6 +47,17 @@ export class SettingTab extends PluginSettingTab {
 
     // Every time we display, grab the token, so we can display a Spotify profile
     this.refreshProfile();
+
+    if (this.loading) {
+      const loadingProfile = stack.createEl("div", { cls: "profile" });
+      loadingProfile.createEl("div", {
+        cls: "spotify-profile-no-img shine",
+      });
+      loadingProfile.createEl("span", {
+        cls: "loading-name shine",
+      });
+      return;
+    }
 
     // If we have a profile to display, show it
     if (this.profile !== undefined) {
